@@ -27,22 +27,22 @@ public class KafkaConfig {
 	
 	private static final Integer REPLICA_COUNT = 1;
 	
-	@Value("spring.kafka.bootstrap-servers")
+	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
 	
-	@Value("spring.kafka.consumer.group-id")
+	@Value("${spring.kafka.consumer.group-id}")
 	private String groupId;
 	
-	@Value("spring.kafka.consumer.auto-offset-reset")
+	@Value("${spring.kafka.consumer.auto-offset-reset}")
 	private String autoOffsetReset;
 	
-	@Value("spring.kafka.topic.payment-success")
+	@Value("${spring.kafka.topic.payment-success}")
 	private String paymentSuccessTopic;
 	
-	@Value("spring.kafka.topic.payment-fail")
+	@Value("${spring.kafka.topic.payment-fail}")
 	private String paymentFailTopic;
 	
-	@Value("spring.kafka.topic.orchestrator")
+	@Value("${spring.kafka.topic.orchestrator}")
 	private String orchestratorTopic;
 	
 	@Bean

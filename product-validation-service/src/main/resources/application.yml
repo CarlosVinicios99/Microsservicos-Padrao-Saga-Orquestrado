@@ -14,7 +14,7 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialects
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         
   kafka:
     bootstrap-servers: ${KAFKA_BROKER:localhost:9092}

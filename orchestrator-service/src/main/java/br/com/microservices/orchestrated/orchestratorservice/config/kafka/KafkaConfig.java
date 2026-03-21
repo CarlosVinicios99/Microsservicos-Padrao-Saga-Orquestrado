@@ -1,4 +1,4 @@
-package config.kafka;
+package br.com.microservices.orchestrated.orchestratorservice.config.kafka;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,6 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import br.com.microservices.orchestrated.orchestratorservice.core.enums.ETopics;
 
-
 @EnableKafka
 @Configuration
 public class KafkaConfig {
@@ -30,13 +29,13 @@ public class KafkaConfig {
 	
 	private static final Integer REPLICA_COUNT = 1;
 	
-	@Value("spring.kafka.bootstrap-servers")
+	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
 	
-	@Value("spring.kafka.consumer.group-id")
+	@Value("${spring.kafka.consumer.group-id}")
 	private String groupId;
 	
-	@Value("spring.kafka.consumer.auto-offset-reset")
+	@Value("${spring.kafka.consumer.auto-offset-reset}")
 	private String autoOffsetReset;
 	
 	
@@ -93,7 +92,7 @@ public class KafkaConfig {
 	}
 	
 	@Bean
-	public NewTopic finishSucessTopic() {
+	public NewTopic finishSuccessTopic() {
 		return buildTopic(ETopics.FINISH_SUCCESS.getTopic());
 	}
 	

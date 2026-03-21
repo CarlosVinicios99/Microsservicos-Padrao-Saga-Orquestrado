@@ -27,19 +27,19 @@ public class KafkaConfig {
 	
 	private static final Integer REPLICA_COUNT = 1;
 	
-	@Value("spring.kafka.bootstrap-servers")
+	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
 	
-	@Value("spring.kafka.consumer.group-id")
+	@Value("${spring.kafka.consumer.group-id}")
 	private String groupId;
 	
-	@Value("spring.kafka.consumer.auto-offset-reset")
+	@Value("${spring.kafka.consumer.auto-offset-reset}")
 	private String autoOffsetReset;
 	
-	@Value("spring.kafka.topic.start-saga")
+	@Value("${spring.kafka.topic.start-saga}")
 	private String startSagaTopic;
 	
-	@Value("spring.kafka.topic.notify-ending")
+	@Value("${spring.kafka.topic.notify-ending}")
 	private String notifyEndingTopic;
 	
 	
