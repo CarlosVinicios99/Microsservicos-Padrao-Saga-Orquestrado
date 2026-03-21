@@ -36,7 +36,7 @@ public class KafkaConfig {
 	@Value("spring.kafka.consumer.group-id")
 	private String groupId;
 	
-	@Value("speing.kafka.consumer.auto-offset-reset")
+	@Value("spring.kafka.consumer.auto-offset-reset")
 	private String autoOffsetReset;
 	
 	
@@ -70,7 +70,7 @@ public class KafkaConfig {
 	}
 	
 	@Bean
-	private KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory){
+	public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory){
 		return new KafkaTemplate<>(producerFactory);
 	}
 	

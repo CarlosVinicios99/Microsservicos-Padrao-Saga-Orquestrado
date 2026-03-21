@@ -33,16 +33,16 @@ public class KafkaConfig {
 	@Value("spring.kafka.consumer.group-id")
 	private String groupId;
 	
-	@Value("speing.kafka.consumer.auto-offset-reset")
+	@Value("spring.kafka.consumer.auto-offset-reset")
 	private String autoOffsetReset;
 	
-	@Value("speing.kafka.topic.product-validation-success")
+	@Value("spring.kafka.topic.product-validation-success")
 	private String productValidationSuccessTopic;
 	
-	@Value("speing.kafka.topic.product-validation-fail")
+	@Value("spring.kafka.topic.product-validation-fail")
 	private String productValidationFailTopic;
 	
-	@Value("speing.kafka.topic.orchestrator")
+	@Value("spring.kafka.topic.orchestrator")
 	private String orchestratorTopic;
 	
 	
@@ -76,7 +76,7 @@ public class KafkaConfig {
 	}
 	
 	@Bean
-	private KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory){
+	public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory){
 		return new KafkaTemplate<>(producerFactory);
 	}
 	
