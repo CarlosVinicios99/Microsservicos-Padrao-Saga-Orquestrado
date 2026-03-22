@@ -1,4 +1,4 @@
-package br.com.microservices.orchestrated.orchestratorservice.config.kafka.exception;
+package br.com.microservices.orchestrated.orchestratorservice.config.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package br.com.microservices.orchestrated.paymentservice.core.producer;
+package br.com.microservices.orchestrated.inventoryservice.core.producer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class KafkaProducer {
