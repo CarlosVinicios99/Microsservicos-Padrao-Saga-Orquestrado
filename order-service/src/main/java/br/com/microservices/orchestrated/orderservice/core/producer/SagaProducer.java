@@ -1,4 +1,4 @@
-package br.com.microservices.orchestrated.orderservice.core.consumer;
+package br.com.microservices.orchestrated.orderservice.core.producer;
 
 
 import java.util.logging.Level;
@@ -27,7 +27,7 @@ public class SagaProducer {
 	public void sendEvent(String payload) {
 		try {
 			this.logger.log(
-				Level.SEVERE, "Sending event to topic " + startSagaTopic + 
+				Level.INFO, "Sending event to topic " + startSagaTopic + 
 				" with data " + payload
 			);
 			this.kafkaTemplate.send(startSagaTopic, payload);
