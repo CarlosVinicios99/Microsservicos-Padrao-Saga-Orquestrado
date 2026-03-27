@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.apache.kafka.common.Uuid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +36,7 @@ public class OrderService {
 		order.setCreatedAt(LocalDateTime.now());
 		order.setTransactionId(String.format("%s_%s", Instant.now().toEpochMilli(), UUID.randomUUID()));
 		
+		this.repository.save(order);
 		producer.sendEvent(this.jsonUtil.toJson(createPayload(order)));
 		
 		return order;

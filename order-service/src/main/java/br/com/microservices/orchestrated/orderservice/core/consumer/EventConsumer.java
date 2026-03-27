@@ -3,9 +3,11 @@ package br.com.microservices.orchestrated.orderservice.core.consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import br.com.microservices.orchestrated.orderservice.core.service.EventService;
 import br.com.microservices.orchestrated.orderservice.core.utils.JsonUtil;
 
 @Component
@@ -13,11 +15,12 @@ public class EventConsumer {
 	
 	private final Logger logger = Logger.getLogger(EventConsumer.class.getName());
 	
+	@Autowired
 	private JsonUtil jsonUtil;
 	
-	public EventConsumer(JsonUtil jsonUtil) {
-		this.jsonUtil = jsonUtil;
-	}
+	@Autowired
+	private EventService service;
+	
 	
 	@KafkaListener(
 		groupId = "${spring.kafka.consumer.group-id}",
@@ -29,6 +32,6 @@ public class EventConsumer {
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.service.notifyEnding(event);
 	}
 }
