@@ -45,7 +45,8 @@ public class OrderService {
 	private Event createPayload(Order order) {
 		Event event = new Event();
 		event.setId(order.getId());
-		event.setTransactionId(order.getId());
+		event.setOrderId(order.getId());
+		event.setTransactionId(order.getTransactionId());
 		event.setPayload(order);
 		event.setCreatedAt(LocalDateTime.now());
 		
