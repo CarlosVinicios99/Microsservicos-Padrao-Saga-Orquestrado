@@ -26,7 +26,7 @@ public class Validation {
 	private String transactionId;
 	
 	@Column(nullable = false)
-	private boolean success;
+	private Boolean success;
 	
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
@@ -39,7 +39,7 @@ public class Validation {
 		
 	}
 
-	public Validation(Integer id, String orderId, String transactionId, boolean success, LocalDateTime createdAt,
+	public Validation(Integer id, String orderId, String transactionId, Boolean success, LocalDateTime createdAt,
 			LocalDateTime updatedAt) {
 		this.id = id;
 		this.orderId = orderId;
@@ -73,11 +73,11 @@ public class Validation {
 		this.transactionId = transactionId;
 	}
 
-	public boolean isSuccess() {
+	public Boolean isSuccess() {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
+	public void setSuccess(Boolean success) {
 		this.success = success;
 	}
 
