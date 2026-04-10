@@ -3,9 +3,11 @@ package br.com.microservices.orchestrated.productvalidationservice.core.consumer
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import br.com.microservices.orchestrated.productvalidationservice.core.service.ProductValidationService;
 import br.com.microservices.orchestrated.productvalidationservice.core.utils.JsonUtil;
 
 @Component
@@ -13,11 +15,11 @@ public class ProductValidationConsumer {
 	
 	private final Logger logger = Logger.getLogger(ProductValidationConsumer.class.getName());
 	
+	@Autowired
 	private JsonUtil jsonUtil;
 	
-	public ProductValidationConsumer(JsonUtil jsonUtil) {
-		this.jsonUtil = jsonUtil;
-	}
+	@Autowired
+	private ProductValidationService productValidationService;
 	
 	
 	@KafkaListener(
@@ -30,7 +32,7 @@ public class ProductValidationConsumer {
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.productValidationService.validateExistingProducts(event);
 	}
 	
 	@KafkaListener(
@@ -43,6 +45,6 @@ public class ProductValidationConsumer {
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.productValidationService.rollbackEvent(event);
 	}
 }
