@@ -1,5 +1,6 @@
 package br.com.microservices.orchestrated.paymentservice.core.service;
 
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import br.com.microservices.orchestrated.paymentservice.config.exception.ValidationException;
 import br.com.microservices.orchestrated.paymentservice.core.dto.Event;
+import br.com.microservices.orchestrated.paymentservice.core.dto.History;
+import br.com.microservices.orchestrated.paymentservice.core.enums.EPaymentStatus;
+import br.com.microservices.orchestrated.paymentservice.core.enums.ESagaStatus;
 import br.com.microservices.orchestrated.paymentservice.core.model.Payment;
 import br.com.microservices.orchestrated.paymentservice.core.producer.KafkaProducer;
 import br.com.microservices.orchestrated.paymentservice.core.repository.PaymentRepository;
@@ -34,6 +38,10 @@ public class PaymentService {
 		try {
 			checkCurrentValidation(event);
 			createPendingPayment(event);
+			Payment payment = findByOrderIdAndTransactionId(event);
+			validateAmount(payment.getTotalAmount());
+			changePaymentToSuccess(payment);
+			handleSuccess(event);
 		}
 		catch(Exception error) {
 			this.logger.log(Level.SEVERE, "Error trying to make payment");
@@ -80,6 +88,40 @@ public class PaymentService {
 	private void setEventAmountItems(Event event, Payment payment) {
 		event.getPayload().setTotalAmount(payment.getTotalAmount());
 		event.getPayload().setTotalItems(payment.getTotalItems());
+	}
+	
+	private void validateAmount(Double amount) {
+		if(amount < 0.01) {
+			throw new ValidationException("The minimum amount available is 0.01");
+		}
+	}
+	
+	private void changePaymentToSuccess(Payment payment) {
+		payment.setStatus(EPaymentStatus.SUCCESS);
+		save(payment);
+	}
+	
+	private void handleSuccess(Event event) {
+		event.setStatus(ESagaStatus.SUCCESS);
+		event.setSource(CURRENT_SOURCE);
+		addHistory(event, "Payment realized successfully!");
+	}
+	
+	private void addHistory(Event event, String message) {
+		History history = new History();
+		
+		history.setSource(event.getSource());
+		history.setStatus(event.getStatus());
+		history.setMessage(message);
+		history.setCreatedAt(LocalDateTime.now());
+		
+		event.addToHistory(history);
+	}
+	
+	private Payment findByOrderIdAndTransactionId(Event event) {
+		return this.paymentRepository
+			.findByOrderIdAndTransactionId(event.getPayload().getId(), event.getTransactionId())
+			.orElseThrow(() -> new ValidationException("Payment not found by orderId and TransactionId"));
 	}
 	
 	private void save(Payment payment) {

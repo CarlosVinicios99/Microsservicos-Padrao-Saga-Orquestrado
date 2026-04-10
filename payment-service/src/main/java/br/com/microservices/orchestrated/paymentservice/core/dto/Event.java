@@ -1,6 +1,7 @@
 package br.com.microservices.orchestrated.paymentservice.core.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.microservices.orchestrated.paymentservice.core.enums.ESagaStatus;
@@ -104,5 +105,14 @@ public class Event {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public void addToHistory(History history) {
+		if(history == null) {
+			this.eventHistory = new ArrayList<>();
+		}
+		else {
+			this.eventHistory.add(history);
+		}
 	}
 }
