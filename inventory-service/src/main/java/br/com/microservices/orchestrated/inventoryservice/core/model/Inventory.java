@@ -19,14 +19,14 @@ public class Inventory {
 	private String productCode;
 	
 	@Column(nullable = false)
-	private String available;
+	private Integer available;
 	
 	
 	public Inventory() {
 		
 	}
 
-	public Inventory(Integer id, String productCode, String available) {
+	public Inventory(Integer id, String productCode, Integer available) {
 		this.id = id;
 		this.productCode = productCode;
 		this.available = available;
@@ -48,11 +48,11 @@ public class Inventory {
 		this.productCode = productCode;
 	}
 
-	public String getAvailable() {
+	public Integer getAvailable() {
 		return available;
 	}
 
-	public void setAvailable(String available) {
+	public void setAvailable(Integer available) {
 		this.available = available;
 	}
 	

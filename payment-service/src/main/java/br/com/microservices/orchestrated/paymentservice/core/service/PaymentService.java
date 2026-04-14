@@ -44,7 +44,7 @@ public class PaymentService {
 			handleSuccess(event);
 		}
 		catch(Exception error) {
-			this.logger.log(Level.SEVERE, "Error trying to make payment");
+			this.logger.log(Level.SEVERE, "Error trying to make payment: " + error);
 			handleFailCurrentNotExecuted(event, error.getMessage());
 		}
 		this.producer.sendEvent(this.jsonUtil.toJson(event));

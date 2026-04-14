@@ -22,7 +22,7 @@ public class OrderInventory {
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "inventory_id", nullable = false)
 	private Inventory inventory;
 	
 	@Column(nullable = false)
