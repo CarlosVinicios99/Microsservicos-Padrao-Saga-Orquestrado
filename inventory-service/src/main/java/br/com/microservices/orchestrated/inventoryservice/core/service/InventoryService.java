@@ -1,5 +1,6 @@
 package br.com.microservices.orchestrated.inventoryservice.core.service;
 
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import br.com.microservices.orchestrated.inventoryservice.config.exception.ValidationException;
 import br.com.microservices.orchestrated.inventoryservice.core.dto.Event;
+import br.com.microservices.orchestrated.inventoryservice.core.dto.History;
+import br.com.microservices.orchestrated.inventoryservice.core.dto.Order;
 import br.com.microservices.orchestrated.inventoryservice.core.dto.OrderProducts;
+import br.com.microservices.orchestrated.inventoryservice.core.enums.ESagaStatus;
 import br.com.microservices.orchestrated.inventoryservice.core.model.Inventory;
 import br.com.microservices.orchestrated.inventoryservice.core.model.OrderInventory;
 import br.com.microservices.orchestrated.inventoryservice.core.producer.KafkaProducer;
@@ -19,7 +23,7 @@ import br.com.microservices.orchestrated.inventoryservice.core.utils.JsonUtil;
 @Service
 public class InventoryService {
 	
-private static final String CURRENT_SOURCE = "INVENTORY_SERVICE";
+	private static final String CURRENT_SOURCE = "INVENTORY_SERVICE";
 	
 	private Logger logger = Logger.getLogger(InventoryService.class.getName());
 	
@@ -41,6 +45,9 @@ private static final String CURRENT_SOURCE = "INVENTORY_SERVICE";
 		try {
 			checkCurrentValidation(event);
 			createOrderInventory(event);
+			updateInventory(event.getPayload());
+			handleSuccess(event);
+			
 		}
 		catch(Exception error) {
 			this.logger.log(Level.SEVERE, "Error trying to update inventory: " + error);
@@ -73,11 +80,45 @@ private static final String CURRENT_SOURCE = "INVENTORY_SERVICE";
 		orderInventory.setNewQuantity(inventory.getAvailable() - product.getQuantity());
 		orderInventory.setOrderId(event.getPayload().getId());
 		orderInventory.setTransactionId(event.getTransactionId());
+		return orderInventory;
+	}
+	
+	private void updateInventory(Order order) {
+		order.getProducts()
+			.forEach(product -> {
+				Inventory inventory = findInventoryByProductCode(product.getProduct().getCode());
+				checkInventory(inventory.getAvailable(), product.getQuantity());
+				inventory.setAvailable(inventory.getAvailable() - product.getQuantity());
+				this.inventoryRepository.save(inventory);
+			});
+	}
+	
+	private void checkInventory(Integer available, Integer orderQuantity) {
+		if(orderQuantity > available) {
+			throw new ValidationException("Product is out of stock");
+		}
 	}
 	
 	private Inventory findInventoryByProductCode(String productCode) {
 		return this.inventoryRepository.findByProductCode(productCode)
 			.orElseThrow(() -> new ValidationException("Inventory not found by informed product"));
+	}
+	
+	private void handleSuccess(Event event) {
+		event.setStatus(ESagaStatus.SUCCESS);
+		event.setSource(CURRENT_SOURCE);
+		addHistory(event, "Inventory updated successfully!");
+	}
+	
+	private void addHistory(Event event, String message) {
+		History history = new History();
+		
+		history.setSource(event.getSource());
+		history.setStatus(event.getStatus());
+		history.setMessage(message);
+		history.setCreatedAt(LocalDateTime.now());
+		
+		event.addToHistory(history);
 	}
 	
 }
