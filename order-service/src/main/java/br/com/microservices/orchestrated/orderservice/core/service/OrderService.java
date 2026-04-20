@@ -2,6 +2,7 @@ package br.com.microservices.orchestrated.orderservice.core.service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class OrderService {
 		event.setTransactionId(order.getTransactionId());
 		event.setPayload(order);
 		event.setCreatedAt(LocalDateTime.now());
+		event.setEventHistory(new ArrayList<>());
 		
 		eventService.save(event);
 		return event;

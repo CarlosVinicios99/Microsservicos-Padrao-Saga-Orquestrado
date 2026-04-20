@@ -21,7 +21,7 @@ public class Event {
 	
 	private ESagaStatus status;
 	
-	private List<History> eventHistory;
+	private List<History> eventHistory = new ArrayList<>();
 	
 	private LocalDateTime createdAt;
 	
