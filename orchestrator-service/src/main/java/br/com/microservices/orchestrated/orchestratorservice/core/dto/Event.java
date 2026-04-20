@@ -1,8 +1,10 @@
 package br.com.microservices.orchestrated.orchestratorservice.core.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import br.com.microservices.orchestrated.orchestratorservice.core.enums.EEventSource;
 import br.com.microservices.orchestrated.orchestratorservice.core.enums.ESagaStatus;
 
 public class Event {
@@ -15,7 +17,7 @@ public class Event {
 	
 	private Order payload;
 	
-	private String source;
+	private EEventSource source;
 	
 	private ESagaStatus status;
 	
@@ -29,7 +31,7 @@ public class Event {
 	}
 	
 	public Event(
-		String id, String transactionId, String orderId, Order payload, String source, 
+		String id, String transactionId, String orderId, Order payload, EEventSource source, 
 		ESagaStatus status,List<History> eventHistory, LocalDateTime createdAt
 	) {
 		this.id = id;
@@ -74,11 +76,11 @@ public class Event {
 		this.payload = payload;
 	}
 
-	public String getSource() {
+	public EEventSource getSource() {
 		return source;
 	}
 
-	public void setSource(String source) {
+	public void setSource(EEventSource source) {
 		this.source = source;
 	}
 
@@ -104,5 +106,14 @@ public class Event {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public void addToHistory(History history) {
+		if(history == null) {
+			this.eventHistory = new ArrayList<>();
+		}
+		else {
+			this.eventHistory.add(history);
+		}
 	}
 }

@@ -17,7 +17,7 @@ public class SagaExecutionController {
 	
 	
 	public ETopics getNextTopic(Event event) {
-		if(event.getSource().isEmpty() || event.getStatus().toString().isEmpty()) {
+		if(event.getSource().toString().isEmpty() || event.getStatus().toString().isEmpty()) {
 			throw new ValidationException("Source and Status must be informed");
 		}   
 		
@@ -43,7 +43,7 @@ public class SagaExecutionController {
 	
 	private void logCurrentSaga(Event event, ETopics topic) {
 		String sagaId = createSagaId(event);
-		String source = event.getSource();
+		String source = event.getSource().toString();
 		
 		switch(event.getStatus()) {
 			case SUCCESS -> this.logger.log(Level.INFO, "### CURRENT SAGA: " + source + " | SUCCESS | NEXT TOPIC " + topic + " | " + sagaId);

@@ -3,35 +3,37 @@ package br.com.microservices.orchestrated.orchestratorservice.core.consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import br.com.microservices.orchestrated.orchestratorservice.core.service.OrchestratorService;
 import br.com.microservices.orchestrated.orchestratorservice.core.utils.JsonUtil;
 
 
 @Component
-public class EventConsumer {
+public class SagaOrchestratorConsumer {
 	
-	private final Logger logger = Logger.getLogger(EventConsumer.class.getName());
+	private final Logger logger = Logger.getLogger(SagaOrchestratorConsumer.class.getName());
 	
+	@Autowired
 	private JsonUtil jsonUtil;
 	
-	public EventConsumer(JsonUtil jsonUtil) {
-		this.jsonUtil = jsonUtil;
-	}
+	@Autowired
+	private OrchestratorService orchestratorService;
 	
 	
 	@KafkaListener(
 		groupId = "${spring.kafka.consumer.group-id}",
 		topics = "${spring.kafka.topic.start-saga}"
 	)
-	public void consumeStartSagaTopic(String payload) {
+	public void consumeStartSagaEvent(String payload) {
 		this.logger.log(
 			Level.INFO, "Receiving event from start-saga topic " 
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.orchestratorService.startSaga(event);
 	}
 	
 	@KafkaListener(
@@ -44,20 +46,20 @@ public class EventConsumer {
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.orchestratorService.continueSaga(event);
 	}
 	
 	@KafkaListener(
 		groupId = "${spring.kafka.consumer.group-id}",
 		topics = "${spring.kafka.topic.finish-success}"
 	)
-	public void consumeFinishSuccessTopic(String payload) {
+	public void consumeFinishSuccessEvent(String payload) {
 		this.logger.log(
 			Level.INFO, "Receiving event from finish-success topic " 
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.orchestratorService.finishSagaSuccess(event);
 	}
 	
 	@KafkaListener(
@@ -70,6 +72,6 @@ public class EventConsumer {
 			+ payload
 		);
 		var event = this.jsonUtil.toEvent(payload);
-		this.logger.log(Level.INFO, event.toString());
+		this.orchestratorService.finishSagaFail(event);
 	}
 }
