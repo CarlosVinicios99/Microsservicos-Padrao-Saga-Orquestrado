@@ -4,7 +4,7 @@ import br.com.microservices.orchestrated.orchestratorservice.core.enums.EEventSo
 import br.com.microservices.orchestrated.orchestratorservice.core.enums.ESagaStatus;
 import br.com.microservices.orchestrated.orchestratorservice.core.enums.ETopics;
 
-public final class SagaHandler {
+public class SagaHandler {
 	
 	private SagaHandler() {
 		
